@@ -15,12 +15,12 @@ import {
 const AdminDashboard = () => {
   const { data: users, isLoading: usersLoading } = useQuery({
     queryKey: ['admin', 'users'],
-    queryFn: usersAPI.getAllUsers
+    queryFn: () => usersAPI.getUsers()
   });
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['admin', 'stats'],
-    queryFn: usersAPI.getUserStats
+    queryFn: () => usersAPI.getUserStats()
   });
 
   const isLoading = usersLoading || statsLoading;
@@ -28,7 +28,7 @@ const AdminDashboard = () => {
   const dashboardStats = [
     {
       name: 'Total Users',
-      value: stats?.totalUsers || '0',
+      value: stats?.data?.totalUsers || '0',
       icon: UsersIcon,
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
@@ -37,7 +37,7 @@ const AdminDashboard = () => {
     },
     {
       name: 'Active Users',
-      value: stats?.activeUsers || '0',
+      value: stats?.data?.totalClients || '0',
       icon: ShieldCheckIcon,
       color: 'text-green-600',
       bgColor: 'bg-green-100',
@@ -46,7 +46,7 @@ const AdminDashboard = () => {
     },
     {
       name: 'New This Month',
-      value: stats?.newUsersThisMonth || '0',
+      value: stats?.data?.recentRegistrations || '0',
       icon: ArrowTrendingUpIcon,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
@@ -64,7 +64,7 @@ const AdminDashboard = () => {
     }
   ];
 
-  const recentUsers = users?.users?.slice(0, 5) || [];
+  const recentUsers = users?.data?.users?.slice(0, 5) || [];
 
   const systemActivity = [
     {

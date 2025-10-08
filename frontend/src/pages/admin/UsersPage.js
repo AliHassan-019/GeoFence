@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Layout from '../../components/layout/Layout';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { userAPI } from '../../services/api';
+import { usersAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 import { 
   MagnifyingGlassIcon,
@@ -26,11 +26,11 @@ const UsersPage = () => {
 
   const { data: usersData, isLoading } = useQuery({
     queryKey: ['admin', 'users'],
-    queryFn: userAPI.getAllUsers
+    queryFn: () => usersAPI.getUsers()
   });
 
   const updateUserMutation = useMutation({
-    mutationFn: ({ userId, data }) => userAPI.updateUser(userId, data),
+    mutationFn: ({ userId, data }) => usersAPI.updateUser(userId, data),
     onSuccess: () => {
       queryClient.invalidateQueries(['admin', 'users']);
       toast.success('User updated successfully');
@@ -42,7 +42,7 @@ const UsersPage = () => {
   });
 
   const deleteUserMutation = useMutation({
-    mutationFn: userAPI.deleteUser,
+    mutationFn: usersAPI.deleteUser,
     onSuccess: () => {
       queryClient.invalidateQueries(['admin', 'users']);
       toast.success('User deleted successfully');
@@ -54,7 +54,7 @@ const UsersPage = () => {
   });
 
   const activateUserMutation = useMutation({
-    mutationFn: userAPI.activateUser,
+    mutationFn: usersAPI.activateUser,
     onSuccess: () => {
       queryClient.invalidateQueries(['admin', 'users']);
       toast.success('User activated successfully');
@@ -65,7 +65,7 @@ const UsersPage = () => {
     }
   });
 
-  const users = usersData?.users || [];
+  const users = usersData?.data?.users || [];
 
   // Filter users based on search and filters
   const filteredUsers = users.filter(user => {

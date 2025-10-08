@@ -22,9 +22,9 @@ const ProfilePage = () => {
   });
 
   const updateProfileMutation = useMutation({
-    mutationFn: usersAPI.updateProfile,
-    onSuccess: (data) => {
-      updateProfile(data.user);
+    mutationFn: (data) => usersAPI.updateUser(user.id, data),
+    onSuccess: (response) => {
+      updateProfile(response.data.data.user);
       queryClient.invalidateQueries(['user', user?.id]);
       toast.success('Profile updated successfully');
       setIsEditing(false);
